@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive English Lesson</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        /* Story/Paragraph Section */
+        .story-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .story-text {
+            font-size: 18px;
+            text-align: justify;
+        }
+
+        /* Emoji Animations */
+        .walking-elephant {
+            font-size: 30px;
+            position: absolute;
+            top: 10px;
+            left: -50px;
+            animation: walkAcross 15s linear infinite;
+        }
+
+        .flying-butterfly {
+            font-size: 25px;
+            position: absolute;
+            right: 20px;
+            top: 50px;
+            animation: flyAround 12s ease-in-out infinite;
+        }
+
+        @keyframes walkAcross {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(850px); }
+        }
+
+        @keyframes flyAround {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(20px) rotate(-5deg); }
+        }
+
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            font-weight: bold;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip:hover {
+            color: #e74c3c;
+            transform: scale(1.1);
+            text-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .ipa {
+            font-weight: bold;
+            color: #f1c40f;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Difficult Words Section */
+        .difficult-words {
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .word-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .word-item {
+            background-color: #fff;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: help;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            margin: 8px;
+            border: 2px solid transparent;
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .word-item::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
+            background-size: 400% 400%;
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .word-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: #fff;
+        }
+
+        .word-item:hover::before {
+            opacity: 1;
+            animation: gradientGlow 3s ease infinite;
+        }
+
+        @keyframes gradientGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .word-item:active {
+            transform: scale(0.95);
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Listening Options Section */
+        .listening-section {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffecb3 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .audio-player {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        audio {
+            width: 100%;
+            outline: none;
+        }
+
+        .audio-title {
+            color: #5d4037;
+            margin-bottom: 15px;
+        }
+
+        /* Practice Section */
+        .practice-words {
+            background: linear-gradient(135deg, #e8f5e9 0%, #a5d6a7 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .practice-list {
+            list-style-type: none;
+            padding: 0;
+            columns: 2;
+        }
+
+        .practice-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .practice-list li::before {
+            content: "•";
+            color: #2e7d32;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .practice-list {
+                columns: 1;
+            }
+            
+            .word-list {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .word-item {
+                padding: 10px 15px;
+                min-width: 100px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Story/Paragraph Section -->
+    <div class="story-container">
+        <div class="walking-elephant">🐘</div>
+        <div class="flying-butterfly">🦋</div>
+        <h1 class="lesson-title">The Baby Elephant</h1>
+        <p class="story-text" id="lesson-paragraph">
+            In the middle of a big forest, a young baby elephant got stuck in a trap. She cries for help, but her
+family can't help her. Her mom and dad leave to find food, leaving her alone. After a while, a
+kind man from a village hears her cries and comes to free her. She tries to find her family,
+walking around the forest, but she can't. One day, a man from an observation station finds her.
+He takes her to the Ta Moa mountain park to feed her and keep her safe. Her story is now
+popular on social media. People see how cute and sad her situation is, especially with her right
+front leg badly injured. Every day, people visit her and send baby milk to help her stay alive. The
+baby elephant, once alone and hurt, now has many fans who care for her and hope she will get
+better.
+        </p>
+    </div>
+
+    <!-- Listening Options Section -->
+   <div class="listening-section">
+    <h2 class="audio-title">Listen to the Story</h2>
+    <div class="audio-player">
+        <audio src="https://www.dropbox.com/scl/fi/22anougiiojowfeccajqi/Yon-Daravuth-Paragraph-A-Baby-Elephant.mp3?rlkey=nr2h4vj2umg438b7bjqbnb3iy&st=uzdrb8bg&raw=1" controls preload="none">
+            Your browser does not support the audio element.
+        </audio>
+        <div style="margin-top: 10px; font-style: italic; color: #5d4037;">
+            Narrated by Yon Daravuth
+        </div>
+    </div>
+</div>
+
+    <!-- Difficult Words Section -->
+    <div class="difficult-words">
+    <h2>Difficult Words</h2>
+    <div class="word-list" id="difficult-words-list">
+        <div class="word-item" data-word="elephant" data-ipa="/ˈɛlɪfənt/" data-definition="A large animal with a long trunk and tusks.">
+            elephant
+            <span class="tooltiptext"><span class="ipa">/ˈɛlɪfənt/</span>A large animal with a long trunk and tusks.</span>
+        </div>
+        <div class="word-item" data-word="trapped" data-ipa="/træpt/" data-definition="Unable to escape from a place or situation.">
+            trapped
+            <span class="tooltiptext"><span class="ipa">/træpt/</span>Unable to escape from a place or situation.</span>
+        </div>
+        <div class="word-item" data-word="cry" data-ipa="/kraɪ/" data-definition="To call out or make a loud noise, often to express pain or sadness.">
+            cry
+            <span class="tooltiptext"><span class="ipa">/kraɪ/</span>To call out or make a loud noise, often to express pain or sadness.</span>
+        </div>
+        <div class="word-item" data-word="family" data-ipa="/ˈfæmɪli/" data-definition="A group of related people or animals.">
+            family
+            <span class="tooltiptext"><span class="ipa">/ˈfæmɪli/</span>A group of related people or animals.</span>
+        </div>
+        <div class="word-item" data-word="village" data-ipa="/ˈvɪlɪdʒ/" data-definition="A small town in the countryside.">
+            village
+            <span class="tooltiptext"><span class="ipa">/ˈvɪlɪdʒ/</span>A small town in the countryside.</span>
+        </div>
+        <div class="word-item" data-word="free" data-ipa="/friː/" data-definition="To release someone or something from being trapped.">
+            free
+            <span class="tooltiptext"><span class="ipa">/friː/</span>To release someone or something from being trapped.</span>
+        </div>
+        <div class="word-item" data-word="forest" data-ipa="/ˈfɔːrɪst/" data-definition="A large area of land covered with trees.">
+            forest
+            <span class="tooltiptext"><span class="ipa">/ˈfɔːrɪst/</span>A large area of land covered with trees.</span>
+        </div>
+        <div class="word-item" data-word="injured" data-ipa="/ˈɪndʒəd/" data-definition="Hurt or physically damaged.">
+            injured
+            <span class="tooltiptext"><span class="ipa">/ˈɪndʒəd/</span>Hurt or physically damaged.</span>
+        </div>
+        <div class="word-item" data-word="popular" data-ipa="/ˈpɒpjʊlə(r)/" data-definition="Liked or followed by many people.">
+            popular
+            <span class="tooltiptext"><span class="ipa">/ˈpɒpjʊlə(r)/</span>Liked or followed by many people.</span>
+        </div>
+        <div class="word-item" data-word="milk" data-ipa="/mɪlk/" data-definition="A white liquid produced by mammals, often used as food">
+            milk
+            <span class="tooltiptext"><span class="ipa">/mɪlk/</span>A white liquid produced by mammals, often used as food</span>
+        </div>
+    </div>
+</div>
+
+    <!-- Practice Section -->
+    <div class="practice-words">
+        <h2>Practice These Words</h2>
+        <ul class="practice-list" id="practice-words-list">
+            <!-- Auto-populated from difficult words -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Process difficult words and paragraph
+            const paragraph = document.getElementById('lesson-paragraph');
+            const wordItems = document.querySelectorAll('.word-item');
+            const practiceList = document.getElementById('practice-words-list');
+            
+            // Clear existing practice list items
+            practiceList.innerHTML = '';
+            
+            // Process each difficult word
+            wordItems.forEach(item => {
+                const word = item.dataset.word;
+                const ipa = item.dataset.ipa;
+                const definition = item.dataset.definition;
+                
+                // Add word to practice list
+                const li = document.createElement('li');
+                li.textContent = word;
+                practiceList.appendChild(li);
+                
+                // Highlight all instances of the word in the paragraph
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                paragraph.innerHTML = paragraph.innerHTML.replace(regex, 
+                    `<span class="tooltip">${word}<span class="tooltiptext"><span class="ipa">${ipa}</span>${definition}</span></span>`);
+            });
+        });
+    </script>
+</body>
+</html>

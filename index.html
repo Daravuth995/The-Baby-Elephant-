@@ -19,6 +19,55 @@
         h1, h2, h3 {
             color: #2c3e50;
         }
+        /* Image Container with Enhanced Effects */
+        .image-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            text-align: center;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            z-index: 1;
+            border: 5px solid white;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            z-index: -1;
+            transition: var(--transition);
+            mix-blend-mode: overlay;
+        }
+
+        .image-container:hover::before {
+            opacity: 0.6;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+
+        .image-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(67, 97, 238, 0.3);
+        }
+
+        .image-container:hover img {
+            transform: scale(1.03);
+        }
 
         /* Story/Paragraph Section */
         .story-container {
@@ -281,6 +330,9 @@
     </style>
 </head>
 <body>
+    <div class="image-container fade-in">
+        <img src="https://raw.githubusercontent.com/Daravuth995/The-Baby-Elephant-/refs/heads/main/2E4C8D34-874F-4B40-890C-054AE6E51868.png?rlkey=tduj6nvymjkyek1go3m1niyay&st=hy3mw46l&raw=1" alt="Office Conversation Illustration">
+    </div>
     <!-- Story/Paragraph Section -->
     <div class="story-container">
         <div class="walking-elephant">🐘</div>
